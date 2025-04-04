@@ -1,0 +1,11 @@
+django 
+djangorestframework 
+django-cors-headers
+django-filter
+pytesseract
+opencv-python
+rest_framework_simplejwt
+djangorestframework-simplejwt
+pandas
+matplotlib
+
