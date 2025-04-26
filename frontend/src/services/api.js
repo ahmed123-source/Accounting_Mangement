@@ -132,16 +132,16 @@ export const invoiceService = {
     return api.delete(`/invoices/${id}/`);
   },
   
-  uploadWithOcr: async (file) => {
-    const formData = new FormData();
-    formData.append('file', file);
-    
-    return api.post('/invoices/upload_with_ocr/', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-  },
+  // Dans services/api.js, la fonction uploadWithOcr doit être comme ceci:
+uploadWithOcr: async (formData) => {
+  console.log("Sending OCR request...");
+  
+  return api.post('/invoices/upload_with_ocr/', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+},
 };
 
 // Transaction services

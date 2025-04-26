@@ -21,7 +21,6 @@ class User(AbstractUser):
         return self.username
 
 
-# backend/apps/invoices/models.py
 
 
 
