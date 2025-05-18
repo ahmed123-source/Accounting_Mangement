@@ -13,6 +13,9 @@ const AnomalyList = () => {
   const [filterStatus, setFilterStatus] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [showTypeMenu, setShowTypeMenu] = useState(false);
+const [showStatusMenu, setShowStatusMenu] = useState(false);
+
   
   const fetchAnomalies = async (page = 1, search = '', type = '', status = '') => {
     try {
@@ -168,114 +171,115 @@ const AnomalyList = () => {
           </form>
           
           <div className="flex space-x-2">
-            <div className="relative inline-block text-left">
-              <button
-                type="button"
-                className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              >
-                <FiFilter className="mr-2 h-5 w-5 text-gray-400" />
-                Type
-              </button>
-              
-              <div
-                className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
-                role="menu"
-                aria-orientation="vertical"
-              >
-                <div className="py-1" role="none">
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterType === '' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleTypeFilter('')}
-                    role="menuitem"
-                  >
-                    Tous les types
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterType === 'duplicate_invoice' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleTypeFilter('duplicate_invoice')}
-                    role="menuitem"
-                  >
-                    Facture en double
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterType === 'amount_mismatch' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleTypeFilter('amount_mismatch')}
-                    role="menuitem"
-                  >
-                    Montant incohérent
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterType === 'missing_data' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleTypeFilter('missing_data')}
-                    role="menuitem"
-                  >
-                    Données manquantes
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterType === 'unusual_transaction' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleTypeFilter('unusual_transaction')}
-                    role="menuitem"
-                  >
-                    Transaction inhabituelle
-                  </button>
-                </div>
-              </div>
-            </div>
-            
-            <div className="relative inline-block text-left">
-              <button
-                type="button"
-                className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              >
-                <FiFilter className="mr-2 h-5 w-5 text-gray-400" />
-                Statut
-              </button>
-              
-              <div
-                className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
-                role="menu"
-                aria-orientation="vertical"
-              >
-                <div className="py-1" role="none">
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === '' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('')}
-                    role="menuitem"
-                  >
-                    Tous les statuts
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === 'new' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('new')}
-                    role="menuitem"
-                  >
-                    Nouveau
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === 'investigating' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('investigating')}
-                    role="menuitem"
-                  >
-                    En cours d'investigation
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === 'resolved' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('resolved')}
-                    role="menuitem"
-                  >
-                    Résolu
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === 'false_positive' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('false_positive')}
-                    role="menuitem"
-                  >
-                    Faux positif
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+  {/* Type dropdown */}
+  <div className="relative inline-block text-left">
+    <button
+      type="button"
+      onClick={() => setShowTypeMenu(open => !open)}
+      className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+    >
+      <FiFilter className="mr-2 h-5 w-5 text-gray-400" />
+      Type
+    </button>
+
+    {showTypeMenu && (
+      <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+        <div className="py-1" role="none">
+          <button
+            className={`block w-full px-4 py-2 text-sm ${filterType === '' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+            onClick={() => { handleTypeFilter(''); setShowTypeMenu(false); }}
+            role="menuitem"
+          >
+            Tous les types
+          </button>
+          <button
+            className={`block w-full px-4 py-2 text-sm ${filterType === 'duplicate_invoice' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+            onClick={() => { handleTypeFilter('duplicate_invoice'); setShowTypeMenu(false); }}
+            role="menuitem"
+          >
+            Facture en double
+          </button>
+          <button
+            className={`block w-full px-4 py-2 text-sm ${filterType === 'amount_mismatch' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+            onClick={() => { handleTypeFilter('amount_mismatch'); setShowTypeMenu(false); }}
+            role="menuitem"
+          >
+            Montant incohérent
+          </button>
+          <button
+            className={`block w-full px-4 py-2 text-sm ${filterType === 'missing_data' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+            onClick={() => { handleTypeFilter('missing_data'); setShowTypeMenu(false); }}
+            role="menuitem"
+          >
+            Données manquantes
+          </button>
+          <button
+            className={`block w-full px-4 py-2 text-sm ${filterType === 'unusual_transaction' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+            onClick={() => { handleTypeFilter('unusual_transaction'); setShowTypeMenu(false); }}
+            role="menuitem"
+          >
+            Transaction inhabituelle
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+
+  {/* Statut dropdown */}
+  <div className="relative inline-block text-left">
+    <button
+      type="button"
+      onClick={() => setShowStatusMenu(open => !open)}
+      className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+    >
+      <FiFilter className="mr-2 h-5 w-5 text-gray-400" />
+      Statut
+    </button>
+
+    {showStatusMenu && (
+      <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+        <div className="py-1" role="none">
+          <button
+            className={`block w-full px-4 py-2 text-sm ${filterStatus === '' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+            onClick={() => { handleStatusFilter(''); setShowStatusMenu(false); }}
+            role="menuitem"
+          >
+            Tous les statuts
+          </button>
+          <button
+            className={`block w-full px-4 py-2 text-sm ${filterStatus === 'new' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+            onClick={() => { handleStatusFilter('new'); setShowStatusMenu(false); }}
+            role="menuitem"
+          >
+            Nouveau
+          </button>
+          <button
+            className={`block w-full px-4 py-2 text-sm ${filterStatus === 'investigating' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+            onClick={() => { handleStatusFilter('investigating'); setShowStatusMenu(false); }}
+            role="menuitem"
+          >
+            En cours d'investigation
+          </button>
+          <button
+            className={`block w-full px-4 py-2 text-sm ${filterStatus === 'resolved' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+            onClick={() => { handleStatusFilter('resolved'); setShowStatusMenu(false); }}
+            role="menuitem"
+          >
+            Résolu
+          </button>
+          <button
+            className={`block w-full px-4 py-2 text-sm ${filterStatus === 'false_positive' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+            onClick={() => { handleStatusFilter('false_positive'); setShowStatusMenu(false); }}
+            role="menuitem"
+          >
+            Faux positif
+          </button>
+        </div>
+      </div>
+    )}
+  </div>
+</div>
+
         </div>
       </div>
       

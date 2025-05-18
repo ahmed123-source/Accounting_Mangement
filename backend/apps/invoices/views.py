@@ -1,13 +1,15 @@
-# backend/apps/invoices/views.py
 from rest_framework import viewsets, parsers, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from .models import Invoice, InvoiceItem
 from .serializers import InvoiceSerializer, InvoiceItemSerializer
 from django.db import transaction
+from rest_framework.exceptions import UnsupportedMediaType
 from apps.utils.ocr import process_invoice_ocr
 from django.conf import settings
 import os
+import csv
+from django.http import HttpResponse
 
 class InvoiceViewSet(viewsets.ModelViewSet):
     """
@@ -15,7 +17,7 @@ class InvoiceViewSet(viewsets.ModelViewSet):
     """
     queryset = Invoice.objects.all()
     serializer_class = InvoiceSerializer
-    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser, parsers.JSONParser]
     
     def perform_create(self, serializer):
         serializer.save(uploaded_by=self.request.user)
@@ -80,3 +82,35 @@ class InvoiceViewSet(viewsets.ModelViewSet):
                 'error': 'Failed to process invoice with OCR',
                 'details': str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+        
+    # Ajoutez cette action à InvoiceViewSet
+    @action(detail=False, methods=['get'])
+    def export(self, request):
+        """
+        Export invoices as CSV
+        """
+        queryset = self.filter_queryset(self.get_queryset())
+        
+        # Create the HttpResponse object with CSV header
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="invoices.csv"'
+        
+        # Create the CSV writer
+        writer = csv.writer(response)
+        writer.writerow(['Numéro de facture', 'Fournisseur', 'Date de facture', 
+                        'Date d\'échéance', 'Montant total', 'Montant TVA', 'Statut'])
+        
+        # Write data rows
+        for invoice in queryset:
+            writer.writerow([
+                invoice.invoice_number,
+                invoice.supplier,
+                invoice.invoice_date,
+                invoice.due_date,
+                invoice.total_amount,
+                invoice.tax_amount,
+                invoice.get_status_display()
+            ])
+        
+        return response

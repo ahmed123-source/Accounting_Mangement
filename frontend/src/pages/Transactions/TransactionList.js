@@ -16,6 +16,11 @@ const TransactionList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedTransactions, setSelectedTransactions] = useState([]);
+  // new at top:
+  const [showTypeMenu, setShowTypeMenu] = useState(false);
+  const [showAccountMenu, setShowAccountMenu] = useState(false);
+  const [showStatusMenu, setShowStatusMenu] = useState(false);
+
   
   const fetchTransactions = async (page = 1, search = '', type = '', bank_account = '', status = '') => {
     try {
@@ -189,140 +194,142 @@ const TransactionList = () => {
           </form>
           
           <div className="flex flex-wrap gap-2">
-            <div className="relative inline-block text-left">
-              <button
-                type="button"
-                className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              >
-                <FiFilter className="mr-2 h-5 w-5 text-gray-400" />
-                Type
-              </button>
-              
-              <div
-                className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
-                role="menu"
-                aria-orientation="vertical"
-              >
-                <div className="py-1" role="none">
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterType === '' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleTypeFilter('')}
-                    role="menuitem"
-                  >
-                    Tous les types
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterType === 'income' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleTypeFilter('income')}
-                    role="menuitem"
-                  >
-                    Recettes
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterType === 'expense' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleTypeFilter('expense')}
-                    role="menuitem"
-                  >
-                    Dépenses
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterType === 'transfer' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleTypeFilter('transfer')}
-                    role="menuitem"
-                  >
-                    Virements
-                  </button>
-                </div>
-              </div>
-            </div>
+          <div className="relative inline-block text-left">
+  <button
+    type="button"
+    onClick={() => {
+      setShowTypeMenu(open => !open);
+      setShowAccountMenu(false);
+      setShowStatusMenu(false);
+    }}
+    className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+  >
+    <FiFilter className="mr-2 h-5 w-5 text-gray-400" />
+    Type
+  </button>
+
+  {showTypeMenu && (
+    <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+      <div className="py-1">
+        <button
+          className={`block w-full px-4 py-2 text-sm ${filterType === '' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+          onClick={() => { handleTypeFilter(''); setShowTypeMenu(false); }}
+        >
+          Tous les types
+        </button>
+        <button
+          className={`block w-full px-4 py-2 text-sm ${filterType === 'income' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+          onClick={() => { handleTypeFilter('income'); setShowTypeMenu(false); }}
+        >
+          Recettes
+        </button>
+        <button
+          className={`block w-full px-4 py-2 text-sm ${filterType === 'expense' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+          onClick={() => { handleTypeFilter('expense'); setShowTypeMenu(false); }}
+        >
+          Dépenses
+        </button>
+        <button
+          className={`block w-full px-4 py-2 text-sm ${filterType === 'transfer' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+          onClick={() => { handleTypeFilter('transfer'); setShowTypeMenu(false); }}
+        >
+          Virements
+        </button>
+      </div>
+    </div>
+  )}
+</div>
+
+
             
-            <div className="relative inline-block text-left">
-              <button
-                type="button"
-                className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              >
-                Comptes
-              </button>
-              
-              <div
-                className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
-                role="menu"
-                aria-orientation="vertical"
-              >
-                <div className="py-1" role="none">
+        <div className="relative inline-block text-left">
+          <button
+            type="button"
+            onClick={() => {
+              setShowAccountMenu(open => !open);
+              setShowTypeMenu(false);
+              setShowStatusMenu(false);
+            }}
+            className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+          >
+            Comptes
+          </button>
+
+          {showAccountMenu && (
+            <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+              <div className="py-1">
+                <button
+                  className={`block w-full px-4 py-2 text-sm ${filterBankAccount === '' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+                  onClick={() => { handleBankAccountFilter(''); setShowAccountMenu(false); }}
+                >
+                  Tous les comptes
+                </button>
+                {bankAccounts.map(a => (
                   <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterBankAccount === '' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleBankAccountFilter('')}
-                    role="menuitem"
+                    key={a.id}
+                    className={`block w-full px-4 py-2 text-sm ${filterBankAccount === a.id ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+                    onClick={() => { handleBankAccountFilter(a.id); setShowAccountMenu(false); }}
                   >
-                    Tous les comptes
+                    {a.account_name}
                   </button>
-                  {bankAccounts.map(account => (
-                    <button
-                      key={account.id}
-                      className={`block w-full text-left px-4 py-2 text-sm ${filterBankAccount === account.id ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                      onClick={() => handleBankAccountFilter(account.id)}
-                      role="menuitem"
-                    >
-                      {account.account_name}
-                    </button>
-                  ))}
-                </div>
+                ))}
               </div>
             </div>
+          )}
+        </div>
+
             
-            <div className="relative inline-block text-left">
-              <button
-                type="button"
-                className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-              >
-                Statut
-              </button>
-              
-              <div
-                className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
-                role="menu"
-                aria-orientation="vertical"
-              >
-                <div className="py-1" role="none">
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === '' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('')}
-                    role="menuitem"
-                  >
-                    Tous les statuts
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === 'pending' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('pending')}
-                    role="menuitem"
-                  >
-                    En attente
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === 'completed' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('completed')}
-                    role="menuitem"
-                  >
-                    Complété
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === 'reconciled' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('reconciled')}
-                    role="menuitem"
-                  >
-                    Rapproché
-                  </button>
-                  <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === 'failed' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('failed')}
-                    role="menuitem"
-                  >
-                    Échoué
-                  </button>
-                </div>
-              </div>
-            </div>
+        <div className="relative inline-block text-left">
+  <button
+    type="button"
+    onClick={() => {
+      setShowStatusMenu(open => !open);
+      setShowTypeMenu(false);
+      setShowAccountMenu(false);
+    }}
+    className="inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+  >
+    Statut
+  </button>
+
+  {showStatusMenu && (
+    <div className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+      <div className="py-1">
+        <button
+          className={`block w-full px-4 py-2 text-sm ${filterStatus === '' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+          onClick={() => { handleStatusFilter(''); setShowStatusMenu(false); }}
+        >
+          Tous les statuts
+        </button>
+        <button
+          className={`block w-full px-4 py-2 text-sm ${filterStatus === 'pending' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+          onClick={() => { handleStatusFilter('pending'); setShowStatusMenu(false); }}
+        >
+          En attente
+        </button>
+        <button
+          className={`block w-full px-4 py-2 text-sm ${filterStatus === 'completed' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+          onClick={() => { handleStatusFilter('completed'); setShowStatusMenu(false); }}
+        >
+          Complété
+        </button>
+        <button
+          className={`block w-full px-4 py-2 text-sm ${filterStatus === 'reconciled' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+          onClick={() => { handleStatusFilter('reconciled'); setShowStatusMenu(false); }}
+        >
+          Rapproché
+        </button>
+        <button
+          className={`block w-full px-4 py-2 text-sm ${filterStatus === 'failed' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
+          onClick={() => { handleStatusFilter('failed'); setShowStatusMenu(false); }}
+        >
+          Échoué
+        </button>
+      </div>
+    </div>
+  )}
+</div>
+
             
             <button
               type="button"

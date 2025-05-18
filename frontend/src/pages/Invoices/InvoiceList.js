@@ -13,6 +13,8 @@ const InvoiceList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [selectedInvoices, setSelectedInvoices] = useState([]);
+  const [showFilterMenu, setShowFilterMenu] = useState(false);
+
   
   const fetchInvoices = async (page = 1, search = '', status = '') => {
     try {
@@ -121,6 +123,22 @@ const InvoiceList = () => {
         return 'bg-gray-100 text-gray-800';
     }
   };
+
+  // Dans InvoiceList.js, ajoutez cette fonction
+const handleExport = async () => {
+  try {
+    // On peut passer les mêmes filtres que pour la recherche
+    await invoiceService.export({
+      search: searchTerm,
+      status: filterStatus
+    });
+  } catch (err) {
+    console.error('Error exporting invoices:', err);
+    setError('Une erreur est survenue lors de l\'exportation des factures.');
+  }
+};
+
+
   
   return (
     <div className="space-y-6">
@@ -176,6 +194,7 @@ const InvoiceList = () => {
                 Filtrer
               </button>
               
+              {showFilterMenu && (
               <div
                 className="origin-top-right absolute right-0 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
                 role="menu"
@@ -184,51 +203,63 @@ const InvoiceList = () => {
               >
                 <div className="py-1" role="none">
                   <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === '' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('')}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      filterStatus === '' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                    }`}
+                    onClick={() => { handleStatusFilter(''); setShowFilterMenu(false); }}
                     role="menuitem"
                   >
                     Tous les statuts
                   </button>
                   <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === 'pending' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('pending')}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      filterStatus === 'pending' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                    }`}
+                    onClick={() => { handleStatusFilter('pending'); setShowFilterMenu(false); }}
                     role="menuitem"
                   >
                     En attente
                   </button>
                   <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === 'processing' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('processing')}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      filterStatus === 'processing' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                    }`}
+                    onClick={() => { handleStatusFilter('processing'); setShowFilterMenu(false); }}
                     role="menuitem"
                   >
                     En traitement
                   </button>
                   <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === 'validated' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('validated')}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      filterStatus === 'validated' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                    }`}
+                    onClick={() => { handleStatusFilter('validated'); setShowFilterMenu(false); }}
                     role="menuitem"
                   >
                     Validé
                   </button>
                   <button
-                    className={`block w-full text-left px-4 py-2 text-sm ${filterStatus === 'error' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'}`}
-                    onClick={() => handleStatusFilter('error')}
+                    className={`block w-full text-left px-4 py-2 text-sm ${
+                      filterStatus === 'error' ? 'bg-gray-100 text-gray-900' : 'text-gray-700'
+                    }`}
+                    onClick={() => { handleStatusFilter('error'); setShowFilterMenu(false); }}
                     role="menuitem"
                   >
                     Erreur
                   </button>
                 </div>
               </div>
+            )}
             </div>
             
-            <button
-              type="button"
-              className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
-            >
-              <FiDownload className="-ml-1 mr-2 h-5 w-5 text-gray-500" />
-              Exporter
-            </button>
+          <button
+            type="button"
+            onClick={handleExport}
+            className="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+          >
+            <FiDownload className="-ml-1 mr-2 h-5 w-5 text-gray-500" />
+            Exporter
+          </button>
           </div>
         </div>
       </div>

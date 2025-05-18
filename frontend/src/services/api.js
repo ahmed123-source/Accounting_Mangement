@@ -124,12 +124,37 @@ export const invoiceService = {
     return api.post('/invoices/', invoiceData);
   },
   
-  update: async (id, invoiceData) => {
-    return api.patch(`/invoices/${id}/`, invoiceData);
+  update: async (id, invoiceData, headers = {}) => {
+    return api.patch(`/invoices/${id}/`, invoiceData, {
+      headers: {
+        'Content-Type': 'application/json',
+        ...headers
+      }
+    });
   },
+  
   
   delete: async (id) => {
     return api.delete(`/invoices/${id}/`);
+  },
+
+  // Ajoutez ceci à invoiceService dans services/api.js
+  export: async (filters = {}) => {
+    const response = await api.get('/invoices/export/', {
+      params: filters,
+      responseType: 'blob'
+    });
+    
+    // Créer un lien temporaire pour télécharger le fichier
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', `factures_${new Date().toISOString().split('T')[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    
+    return response;
   },
   
   // Dans services/api.js, la fonction uploadWithOcr doit être comme ceci:
@@ -256,3 +281,4 @@ export const anomalyService = {
     return api.post(`/anomalies/${id}/mark_false_positive/`);
   },
 };
+

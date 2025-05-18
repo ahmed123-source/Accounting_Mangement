@@ -14,6 +14,7 @@ import Dashboard from './pages/Dashboard';
 import InvoiceList from './pages/Invoices/InvoiceList';
 import InvoiceUpload from './pages/Invoices/InvoiceUpload';
 import InvoiceDetail from './pages/Invoices/InvoiceDetails';
+import InvoiceEdit from './pages/Invoices/InvoiceEdit';
 import TransactionList from './pages/Transactions/TransactionList';
 import TransactionDetail from './pages/Transactions/TransactionDetail';
 import TransactionCreate from './pages/Transactions/TransactionCreate'; 
@@ -70,6 +71,7 @@ const App = () => {
             <Route path="invoices" element={<InvoiceList />} />
             <Route path="invoices/upload" element={<InvoiceUpload />} />
             <Route path="invoices/:id" element={<InvoiceDetail />} />
+            <Route path="invoices/:id/edit" element={<InvoiceEdit />} />
             
             {/* Transaction routes */}
             <Route path="transactions" element={<TransactionList />} />

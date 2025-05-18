@@ -38,11 +38,18 @@ const InvoiceDetail = () => {
     fetchInvoiceData();
   }, [id]);
   
+  // Dans InvoiceDetail.js
+// Dans InvoiceDetail.js
   const handleStatusChange = async (newStatus) => {
     try {
       setLoading(true);
       
-      await invoiceService.update(id, { status: newStatus });
+      // Envoyer les données au format JSON
+      await invoiceService.update(id, { status: newStatus }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       
       // Refresh invoice data
       const response = await invoiceService.getById(id);
